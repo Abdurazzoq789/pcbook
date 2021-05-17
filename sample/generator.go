@@ -60,7 +60,7 @@ func NewGPU() *pb.GPU {
 
 func NewRam() *pb.Memory {
 	ram := &pb.Memory{
-		Value: uint64(randomInt(2, 6)),
+		Value: uint64(randomInt(2, 16)),
 		Unit:  pb.Memory_GIGABYTE,
 	}
 	return ram
