@@ -8,7 +8,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
-	"time"
 )
 
 type LaptopServer struct {
@@ -36,7 +35,7 @@ func (server *LaptopServer) CreateLaptop(ctx context.Context, req *pb.CreateLapt
 		laptop.Id = id.String()
 	}
 
-	time.Sleep(6 * time.Second)
+	//time.Sleep(6 * time.Second)
 
 	if ctx.Err() == context.Canceled {
 		log.Print("request is canceled")

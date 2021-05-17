@@ -25,7 +25,7 @@ func main() {
 	laptopClient := pb.NewLaptopServiceClient(conn)
 
 	laptop := sample.NewLaptop()
-	laptop.Id = ""
+	//laptop.Id = ""
 	req := &pb.CreateLaptopRequest{
 		Laptop: laptop,
 	}
