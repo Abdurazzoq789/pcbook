@@ -118,15 +118,22 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 
 func main() {
 	serverAddress := flag.String("address", "", "the server")
-	flag.Parse()
-	log.Printf("dial server %s", *serverAddress)
+	enableTLS := flag.Bool("tls", false, "enable SSL/TLS")
 
-	tlsCredentials, err := loadTLSCredentials()
-	if err != nil {
-		log.Fatal("cannot load TLS credentials: ", err)
+	flag.Parse()
+	log.Printf("dial server %s, TLS = %t", *serverAddress, *enableTLS)
+
+	transportOptions := grpc.WithInsecure()
+
+	if *enableTLS {
+		tlsCredentials, err := loadTLSCredentials()
+		if err != nil {
+			log.Fatal("cannot load TLS credentials: ", err)
+		}
+		transportOptions = grpc.WithTransportCredentials(tlsCredentials)
 	}
 
-	cc1, err := grpc.Dial(*serverAddress, grpc.WithTransportCredentials(tlsCredentials))
+	cc1, err := grpc.Dial(*serverAddress, transportOptions)
 	if err != nil {
 		log.Fatal("cannot dial server: ", err)
 	}
@@ -138,7 +145,7 @@ func main() {
 		log.Fatal("cannot create auth interceptor: ", err)
 	}
 
-	cc2, err := grpc.Dial(*serverAddress, grpc.WithTransportCredentials(tlsCredentials), grpc.WithUnaryInterceptor(interceptor.Unary()), grpc.WithStreamInterceptor(interceptor.Stream()))
+	cc2, err := grpc.Dial(*serverAddress, transportOptions, grpc.WithUnaryInterceptor(interceptor.Unary()), grpc.WithStreamInterceptor(interceptor.Stream()))
 	if err != nil {
 		log.Fatal("cannot dial server: ", err)
 	}
